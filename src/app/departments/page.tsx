@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { INITIAL_DEPARTMENTS } from '@/lib/mock-data';
-import { HeartPulse, ChevronRight, Search, Calendar } from 'lucide-react';
+import { ChevronRight, Search, Calendar } from 'lucide-react';
 import BookingModal from '@/components/booking/BookingModal';
 
 export default function DepartmentsPage() {
@@ -17,12 +17,12 @@ export default function DepartmentsPage() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-6 sm:space-y-8">
       {/* Page Header */}
-      <div className="bg-gradient-to-r from-teal-800 to-slate-900 rounded-3xl p-8 sm:p-10 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+      <div className="bg-gradient-to-r from-teal-800 to-slate-900 rounded-2xl sm:rounded-3xl p-6 sm:p-10 text-white flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 shadow-xl">
         <div className="space-y-2">
           <span className="text-xs font-bold uppercase tracking-wider text-teal-300">Clinical Specialties</span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold">All Medical Departments</h1>
+          <h1 className="text-2xl sm:text-4xl font-extrabold">All Medical Departments</h1>
           <p className="text-xs sm:text-sm text-teal-100 max-w-xl">
             Explore our specialized clinical centers, state-of-the-art diagnostic facilities, and expert consultant teams.
           </p>
@@ -42,13 +42,13 @@ export default function DepartmentsPage() {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {filteredDepts.map((dept) => (
           <div
             key={dept.id}
-            className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover-lift flex flex-col justify-between"
+            className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
           >
-            <div className="relative h-48 overflow-hidden">
+            <div className="relative h-44 sm:h-48 overflow-hidden">
               <img
                 src={dept.image}
                 alt={dept.name}
@@ -62,10 +62,10 @@ export default function DepartmentsPage() {
               </div>
             </div>
 
-            <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+            <div className="p-4 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">{dept.name}</h3>
-                <p className="text-xs text-slate-600 mt-2 leading-relaxed line-clamp-3">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900">{dept.name}</h3>
+                <p className="text-xs text-slate-600 mt-1.5 leading-relaxed line-clamp-3">
                   {dept.description}
                 </p>
               </div>

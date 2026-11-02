@@ -57,6 +57,17 @@ export default function DoctorDashboardPage() {
     setMedicines(medicines.filter((_, i) => i !== idx));
   };
 
+  const handleAddTest = () => {
+    if (newTestInput.trim()) {
+      setAdvisedTests([...advisedTests, newTestInput.trim()]);
+      setNewTestInput('');
+    }
+  };
+
+  const handleRemoveTest = (idx: number) => {
+    setAdvisedTests(advisedTests.filter((_, i) => i !== idx));
+  };
+
   const handleSavePrescription = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedAppointment || !doctorInfo) return;
@@ -87,24 +98,24 @@ export default function DoctorDashboardPage() {
   if (!currentUser || !doctorInfo) return null;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       
       {/* Doctor Profile Banner */}
-      <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-slate-800 shadow-xl">
-        <div className="flex items-center gap-4">
+      <div className="bg-slate-900 text-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-6 border border-slate-800 shadow-xl">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4">
           <img
             src={doctorInfo.photo}
             alt={doctorInfo.name}
-            className="w-16 h-16 rounded-full object-cover border-2 border-teal-400"
+            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-teal-400 shrink-0"
           />
           <div>
-            <h2 className="text-xl font-extrabold text-white">{doctorInfo.name}</h2>
+            <h2 className="text-lg sm:text-xl font-extrabold text-white">{doctorInfo.name}</h2>
             <p className="text-xs text-teal-400 font-semibold">{doctorInfo.designation} • {doctorInfo.departmentName}</p>
             <p className="text-[11px] text-slate-400 mt-1">BMDC Registration No: {doctorInfo.bmdcRegNo}</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4 bg-slate-950 px-5 py-3 rounded-2xl border border-slate-800 text-xs">
+        <div className="flex items-center gap-4 bg-slate-950 px-4 sm:px-5 py-3 rounded-2xl border border-slate-800 text-xs w-full sm:w-auto justify-around sm:justify-start">
           <div>
             <div className="text-[10px] text-slate-400 uppercase font-bold">Consultation Fee</div>
             <div className="text-base font-extrabold text-teal-400">৳{doctorInfo.consultationFee}</div>
@@ -117,14 +128,14 @@ export default function DoctorDashboardPage() {
       </div>
 
       {/* Appointment Queue */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-5">
-        <div className="flex items-center justify-between">
+      <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4 sm:space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h3 className="font-extrabold text-slate-900 text-lg">Today's Consultation Queue</h3>
+            <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">Today's Consultation Queue</h3>
             <p className="text-xs text-slate-500">Manage patient visits and issue digital prescriptions</p>
           </div>
 
-          <span className="text-xs font-bold text-teal-800 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+          <span className="text-xs font-bold text-teal-800 bg-teal-50 px-3 py-1 rounded-full border border-teal-200 self-start sm:self-auto">
             {appointments.length} Appointments Scheduled
           </span>
         </div>
@@ -136,7 +147,7 @@ export default function DoctorDashboardPage() {
             appointments.map((apt) => (
               <div key={apt.id} className="py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h4 className="font-bold text-slate-900 text-sm">{apt.patientName}</h4>
                     <span className="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded">
                       {apt.appointmentNo}
@@ -147,7 +158,7 @@ export default function DoctorDashboardPage() {
                   {apt.notes && <p className="text-xs text-amber-700 bg-amber-50 px-2 py-1 rounded-md mt-1 font-medium">Notes: {apt.notes}</p>}
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                   <select
                     value={apt.status}
                     onChange={(e) => handleStatusChange(apt.id, e.target.value as any)}
@@ -161,7 +172,7 @@ export default function DoctorDashboardPage() {
 
                   <button
                     onClick={() => openPrescriptionForAppointment(apt)}
-                    className="flex items-center gap-1.5 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 px-4 py-2 rounded-xl shadow-sm transition-all"
+                    className="flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 px-4 py-2.5 rounded-xl shadow-sm transition-all"
                   >
                     <Pill className="w-4 h-4" />
                     <span>Create Prescription</span>
@@ -173,25 +184,28 @@ export default function DoctorDashboardPage() {
         </div>
       </div>
 
-      {/* Digital Prescription Generator Modal */}
+      {/* Digital Prescription Generator Modal - Fully Responsive */}
       {isPrescriptionModalOpen && selectedAppointment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-3xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl border border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-2xl w-full max-h-[92vh] overflow-y-auto space-y-5 shadow-2xl border border-slate-100">
             
             {/* Header */}
             <div className="flex items-center justify-between border-b pb-3">
               <div>
-                <h3 className="font-extrabold text-lg text-slate-900">Digital Prescription Generator</h3>
-                <p className="text-xs text-teal-700 font-semibold">
+                <h3 className="font-extrabold text-base sm:text-lg text-slate-900">Digital Prescription Generator</h3>
+                <p className="text-xs text-teal-700 font-semibold truncate max-w-xs sm:max-w-none">
                   Patient: {selectedAppointment.patientName} ({selectedAppointment.appointmentNo})
                 </p>
               </div>
-              <button onClick={() => setIsPrescriptionModalOpen(false)} className="p-1 rounded-full hover:bg-slate-100">
-                <X className="w-5 h-5 text-slate-400" />
+              <button
+                onClick={() => setIsPrescriptionModalOpen(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSavePrescription} className="space-y-5">
+            <form onSubmit={handleSavePrescription} className="space-y-4 sm:space-y-5">
               {/* Diagnosis */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Clinical Diagnosis *</label>
@@ -221,7 +235,7 @@ export default function DoctorDashboardPage() {
 
                 {medicines.map((med, idx) => (
                   <div key={idx} className="p-3 bg-slate-50 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
-                    <div className="sm:col-span-4">
+                    <div className="sm:col-span-5">
                       <input
                         type="text"
                         placeholder="Medicine Name (e.g. Tab. Napa 500mg)"
@@ -231,23 +245,23 @@ export default function DoctorDashboardPage() {
                           updated[idx].name = e.target.value;
                           setMedicines(updated);
                         }}
-                        className="w-full p-2 border border-slate-200 rounded-lg text-xs"
+                        className="w-full p-2 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-teal-500 bg-white"
                       />
                     </div>
-                    <div className="sm:col-span-3">
+
+                    <div className="grid grid-cols-3 sm:col-span-6 gap-2">
                       <input
                         type="text"
-                        placeholder="Dose (1+0+1)"
+                        placeholder="1 + 0 + 1"
                         value={med.dosage}
                         onChange={(e) => {
                           const updated = [...medicines];
                           updated[idx].dosage = e.target.value;
                           setMedicines(updated);
                         }}
-                        className="w-full p-2 border border-slate-200 rounded-lg text-xs"
+                        className="w-full p-2 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-teal-500 bg-white"
                       />
-                    </div>
-                    <div className="sm:col-span-3">
+
                       <select
                         value={med.timing}
                         onChange={(e) => {
@@ -255,41 +269,81 @@ export default function DoctorDashboardPage() {
                           updated[idx].timing = e.target.value as any;
                           setMedicines(updated);
                         }}
-                        className="w-full p-2 border border-slate-200 rounded-lg text-xs"
+                        className="w-full p-2 border border-slate-200 rounded-xl text-xs font-semibold outline-none bg-white"
                       >
                         <option value="After Food">After Food</option>
                         <option value="Before Food">Before Food</option>
                         <option value="With Food">With Food</option>
                       </select>
+
+                      <input
+                        type="number"
+                        placeholder="Days"
+                        value={med.durationDays}
+                        onChange={(e) => {
+                          const updated = [...medicines];
+                          updated[idx].durationDays = Number(e.target.value);
+                          setMedicines(updated);
+                        }}
+                        className="w-full p-2 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-teal-500 bg-white"
+                      />
                     </div>
-                    <div className="sm:col-span-2 text-right">
-                      {medicines.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeMedicineRow(idx)}
-                          className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
+
+                    <div className="sm:col-span-1 flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => removeMedicineRow(idx)}
+                        className="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg hover:bg-rose-50 transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* General Advice */}
+              {/* Advised Tests */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Advised Lab Tests</label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {advisedTests.map((test, idx) => (
+                    <span key={idx} className="flex items-center gap-1.5 bg-teal-50 text-teal-800 text-xs px-2.5 py-1 rounded-full border border-teal-200">
+                      <span>{test}</span>
+                      <button type="button" onClick={() => handleRemoveTest(idx)} className="hover:text-rose-600">×</button>
+                    </span>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newTestInput}
+                    onChange={(e) => setNewTestInput(e.target.value)}
+                    placeholder="Add test (e.g. CBC, Serum Creatinine)"
+                    className="flex-1 p-2 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddTest}
+                    className="px-3.5 py-2 bg-slate-800 text-white text-xs font-bold rounded-xl hover:bg-slate-700"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+
+              {/* Advice */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Doctor Advice & Lifestyle Instructions</label>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">General Advice & Instructions</label>
                 <textarea
-                  rows={3}
+                  rows={2}
                   value={generalAdvice}
                   onChange={(e) => setGeneralAdvice(e.target.value)}
-                  placeholder="e.g. Low salt diet, drink plenty of water, avoid oily foods..."
+                  placeholder="e.g. Regular morning walk, avoid high sodium diet, repeat BP check..."
                   className="w-full p-2.5 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
-              {/* Footer CTA */}
+              {/* Actions */}
               <div className="flex items-center justify-end gap-3 pt-3 border-t">
                 <button
                   type="button"
@@ -300,14 +354,13 @@ export default function DoctorDashboardPage() {
                 </button>
                 <button
                   type="submit"
-                  className="flex items-center gap-2 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 px-5 py-2.5 rounded-xl shadow-md"
+                  className="flex items-center gap-2 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 px-5 py-2.5 rounded-xl shadow-md transition-all"
                 >
                   <Download className="w-4 h-4" />
-                  <span>Issue & Download Rx PDF</span>
+                  <span>Save & Download PDF Prescription</span>
                 </button>
               </div>
             </form>
-
           </div>
         </div>
       )}

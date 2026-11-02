@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { CarePlusStore } from '@/lib/store';
 import { Doctor, Department, Appointment, Invoice, User } from '@/lib/types';
 import {
-  Shield,
   Users,
   Stethoscope,
   Building2,
@@ -14,9 +13,10 @@ import {
   TrendingUp,
   Search,
   CheckCircle2,
-  AlertCircle,
+  Clock,
   X,
-  CreditCard
+  Download,
+  Filter
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -26,6 +26,9 @@ export default function AdminDashboardPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [activeTab, setActiveTab] = useState<'analytics' | 'doctors' | 'departments' | 'appointments' | 'billing'>('analytics');
+
+  // Search & filter state
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Add Doctor Form State
   const [isAddDoctorModalOpen, setIsAddDoctorModalOpen] = useState(false);
@@ -88,100 +91,320 @@ export default function AdminDashboardPage() {
   if (!currentUser) return null;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       
-      {/* Admin Tab Navigation */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200">
+      {/* Admin Tab Navigation - fully responsive touch-scrollable */}
+      <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 border-b border-slate-200 scrollbar-none -mx-1 px-1">
         {[
-          { key: 'analytics', label: 'Overview Analytics', icon: <TrendingUp className="w-4 h-4" /> },
-          { key: 'doctors', label: 'Doctor Management', icon: <Stethoscope className="w-4 h-4" /> },
-          { key: 'departments', label: 'Departments', icon: <Building2 className="w-4 h-4" /> },
-          { key: 'appointments', label: 'Appointments Overview', icon: <Calendar className="w-4 h-4" /> },
-          { key: 'billing', label: 'Billing & Invoices', icon: <Receipt className="w-4 h-4" /> },
+          { key: 'analytics', label: 'Analytics', icon: <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> },
+          { key: 'doctors', label: 'Doctors', icon: <Stethoscope className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> },
+          { key: 'departments', label: 'Departments', icon: <Building2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> },
+          { key: 'appointments', label: 'Appointments', icon: <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> },
+          { key: 'billing', label: 'Billing & Invoices', icon: <Receipt className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> },
         ].map((tab) => (
           <button
             key={tab.key}
-            onClick={() => setActiveTab(tab.key as any)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all shrink-0 ${
+            onClick={() => {
+              setActiveTab(tab.key as any);
+              setSearchTerm('');
+            }}
+            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs font-bold transition-all shrink-0 ${
               activeTab === tab.key
                 ? 'bg-slate-900 text-white shadow-md'
                 : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
             }`}
           >
             {tab.icon}
-            <span>{tab.label}</span>
+            <span className="whitespace-nowrap">{tab.label}</span>
           </button>
         ))}
       </div>
 
       {/* TAB 1: OVERVIEW ANALYTICS */}
       {activeTab === 'analytics' && (
-        <div className="space-y-8 animate-fadeIn">
+        <div className="space-y-6 sm:space-y-8 animate-fadeIn">
           {/* Stat Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            <div className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-2">
               <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
                 <span>Total Revenue (BDT)</span>
-                <Receipt className="w-5 h-5 text-emerald-600" />
+                <div className="p-2 bg-emerald-50 rounded-xl">
+                  <Receipt className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
+                </div>
               </div>
-              <div className="text-3xl font-extrabold text-slate-900">৳{totalRevenue.toLocaleString()}</div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">৳{totalRevenue.toLocaleString()}</div>
               <div className="text-[11px] text-emerald-600 font-bold">↑ 18.5% from last month</div>
             </div>
 
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+            <div className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-2">
               <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
                 <span>Total Appointments</span>
-                <Calendar className="w-5 h-5 text-teal-600" />
+                <div className="p-2 bg-teal-50 rounded-xl">
+                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600" />
+                </div>
               </div>
-              <div className="text-3xl font-extrabold text-slate-900">{appointments.length}</div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">{appointments.length}</div>
               <div className="text-[11px] text-teal-600 font-bold">100% online booking sync</div>
             </div>
 
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+            <div className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-2">
               <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
                 <span>Active Consultants</span>
-                <Stethoscope className="w-5 h-5 text-sky-600" />
+                <div className="p-2 bg-sky-50 rounded-xl">
+                  <Stethoscope className="w-4 h-4 sm:w-5 sm:h-5 text-sky-600" />
+                </div>
               </div>
-              <div className="text-3xl font-extrabold text-slate-900">{doctors.length}</div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">{doctors.length}</div>
               <div className="text-[11px] text-sky-600 font-bold">BMDC Registered</div>
             </div>
 
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+            <div className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-2">
               <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
                 <span>Clinical Departments</span>
-                <Building2 className="w-5 h-5 text-purple-600" />
+                <div className="p-2 bg-purple-50 rounded-xl">
+                  <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
+                </div>
               </div>
-              <div className="text-3xl font-extrabold text-slate-900">{departments.length}</div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">{departments.length}</div>
               <div className="text-[11px] text-purple-600 font-bold">Specialized OPD/IPD</div>
             </div>
           </div>
 
           {/* Recent System Activity Table */}
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
-            <h3 className="font-extrabold text-slate-900 text-base">Recent Hospital Appointments</h3>
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">Recent Hospital Appointments</h3>
+                <p className="text-xs text-slate-500">Real-time appointments booked across all hospital departments</p>
+              </div>
+              <span className="text-xs font-bold text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200 self-start sm:self-auto">
+                {appointments.length} Total Registered
+              </span>
+            </div>
+
+            <div className="overflow-x-auto -mx-4 sm:mx-0">
+              <div className="inline-block min-w-full align-middle px-4 sm:px-0">
+                <table className="min-w-full text-left text-xs text-slate-600">
+                  <thead className="bg-slate-50 text-slate-800 font-bold border-b border-slate-200">
+                    <tr>
+                      <th className="p-3 whitespace-nowrap">Ticket No</th>
+                      <th className="p-3 whitespace-nowrap">Patient</th>
+                      <th className="p-3 whitespace-nowrap">Doctor</th>
+                      <th className="p-3 whitespace-nowrap">Department</th>
+                      <th className="p-3 whitespace-nowrap">Fee</th>
+                      <th className="p-3 whitespace-nowrap">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {appointments.map((apt) => (
+                      <tr key={apt.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="p-3 font-bold text-slate-900 whitespace-nowrap">{apt.appointmentNo}</td>
+                        <td className="p-3 font-semibold text-slate-800 whitespace-nowrap">{apt.patientName}</td>
+                        <td className="p-3 text-teal-700 font-medium whitespace-nowrap">{apt.doctorName}</td>
+                        <td className="p-3 whitespace-nowrap">{apt.departmentName}</td>
+                        <td className="p-3 font-bold whitespace-nowrap">৳{apt.fee}</td>
+                        <td className="p-3 whitespace-nowrap">
+                          <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
+                            apt.status === 'confirmed' ? 'bg-emerald-100 text-emerald-800' :
+                            apt.status === 'completed' ? 'bg-sky-100 text-sky-800' :
+                            apt.status === 'cancelled' ? 'bg-rose-100 text-rose-800' :
+                            'bg-amber-100 text-amber-800'
+                          }`}>
+                            {apt.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 2: DOCTOR MANAGEMENT */}
+      {activeTab === 'doctors' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">Hospital Doctor Registry</h3>
+              <p className="text-xs text-slate-500">Manage consultant list, credentials & consultation fees</p>
+            </div>
+
+            <button
+              onClick={() => setIsAddDoctorModalOpen(true)}
+              className="flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 px-4 py-2.5 rounded-xl shadow-sm transition-all self-start sm:self-auto"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Specialist Doctor</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {doctors.map((doc) => (
+              <div key={doc.id} className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-4 sm:p-5 shadow-sm space-y-4 hover:border-teal-500/40 transition-colors">
+                <div className="flex items-center gap-3.5">
+                  <img src={doc.photo} alt={doc.name} className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-teal-500/20 shrink-0" />
+                  <div className="min-w-0">
+                    <h4 className="font-bold text-slate-900 text-sm truncate">{doc.name}</h4>
+                    <p className="text-xs text-teal-700 font-medium truncate">{doc.designation}</p>
+                    <p className="text-[10px] text-slate-400">BMDC: {doc.bmdcRegNo}</p>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <span className="text-slate-500 font-medium truncate mr-2">{doc.departmentName}</span>
+                  <span className="font-extrabold text-teal-700 shrink-0">Fee: ৳{doc.consultationFee}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* TAB 3: DEPARTMENTS */}
+      {activeTab === 'departments' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div>
+            <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">Clinical Departments</h3>
+            <p className="text-xs text-slate-500">Hospital active clinical centers & assigned specialist doctors</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {departments.map((dept) => (
+              <div key={dept.id} className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-2 hover:border-teal-500/40 transition-colors">
+                <h4 className="font-bold text-slate-900 text-base">{dept.name}</h4>
+                <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">{dept.description}</p>
+                <div className="pt-3 border-t border-slate-100 text-xs font-bold text-teal-600">
+                  {dept.doctorCount} Active Doctors Assigned
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* TAB 4: APPOINTMENTS OVERVIEW */}
+      {activeTab === 'appointments' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">All Hospital Appointments</h3>
+              <p className="text-xs text-slate-500">Filter, review, and track clinical visits</p>
+            </div>
+
+            <div className="relative w-full sm:w-64">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+              <input
+                type="text"
+                placeholder="Search patient or doctor..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-teal-500"
+              />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-600">
                 <thead className="bg-slate-50 text-slate-800 font-bold border-b border-slate-200">
                   <tr>
-                    <th className="p-3">Ticket No</th>
-                    <th className="p-3">Patient</th>
-                    <th className="p-3">Doctor</th>
-                    <th className="p-3">Department</th>
-                    <th className="p-3">Fee</th>
-                    <th className="p-3">Status</th>
+                    <th className="p-3.5 whitespace-nowrap">Ticket No</th>
+                    <th className="p-3.5 whitespace-nowrap">Patient Name</th>
+                    <th className="p-3.5 whitespace-nowrap">Phone</th>
+                    <th className="p-3.5 whitespace-nowrap">Doctor</th>
+                    <th className="p-3.5 whitespace-nowrap">Date & Slot</th>
+                    <th className="p-3.5 whitespace-nowrap">Fee</th>
+                    <th className="p-3.5 whitespace-nowrap">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {appointments.map((apt) => (
-                    <tr key={apt.id} className="hover:bg-slate-50">
-                      <td className="p-3 font-bold text-slate-900">{apt.appointmentNo}</td>
-                      <td className="p-3 font-semibold text-slate-800">{apt.patientName}</td>
-                      <td className="p-3 text-teal-700 font-medium">{apt.doctorName}</td>
-                      <td className="p-3">{apt.departmentName}</td>
-                      <td className="p-3 font-bold">৳{apt.fee}</td>
-                      <td className="p-3">
-                        <span className="text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
-                          {apt.status}
+                  {appointments
+                    .filter(a =>
+                      !searchTerm ||
+                      a.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      a.doctorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      a.appointmentNo.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                    .map((apt) => (
+                      <tr key={apt.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="p-3.5 font-bold text-slate-900 whitespace-nowrap">{apt.appointmentNo}</td>
+                        <td className="p-3.5 font-semibold text-slate-800 whitespace-nowrap">{apt.patientName}</td>
+                        <td className="p-3.5 whitespace-nowrap">{apt.patientPhone}</td>
+                        <td className="p-3.5 text-teal-700 font-medium whitespace-nowrap">{apt.doctorName}</td>
+                        <td className="p-3.5 whitespace-nowrap">{apt.date} • {apt.timeSlot}</td>
+                        <td className="p-3.5 font-bold whitespace-nowrap">৳{apt.fee}</td>
+                        <td className="p-3.5 whitespace-nowrap">
+                          <span className={`text-[10px] font-bold uppercase px-2.5 py-1 rounded-full ${
+                            apt.status === 'confirmed' ? 'bg-emerald-100 text-emerald-800' :
+                            apt.status === 'completed' ? 'bg-sky-100 text-sky-800' :
+                            'bg-amber-100 text-amber-800'
+                          }`}>
+                            {apt.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 5: BILLING & INVOICES */}
+      {activeTab === 'billing' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div>
+            <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">Hospital Billing & Invoices</h3>
+            <p className="text-xs text-slate-500">Track digital payment transactions, invoice history and receipts</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+              <div className="text-xs text-slate-500 font-semibold">Total Invoiced</div>
+              <div className="text-2xl font-extrabold text-slate-900 mt-1">৳{totalRevenue.toLocaleString()}</div>
+            </div>
+            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+              <div className="text-xs text-slate-500 font-semibold">Payment Methods</div>
+              <div className="text-sm font-bold text-teal-700 mt-1">bKash, Nagad, Card, Cash</div>
+            </div>
+            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+              <div className="text-xs text-slate-500 font-semibold">Transactions Count</div>
+              <div className="text-2xl font-extrabold text-slate-900 mt-1">{invoices.length + appointments.length}</div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-600">
+                <thead className="bg-slate-50 text-slate-800 font-bold border-b border-slate-200">
+                  <tr>
+                    <th className="p-3.5 whitespace-nowrap">Invoice ID</th>
+                    <th className="p-3.5 whitespace-nowrap">Patient</th>
+                    <th className="p-3.5 whitespace-nowrap">Description</th>
+                    <th className="p-3.5 whitespace-nowrap">Amount</th>
+                    <th className="p-3.5 whitespace-nowrap">Method</th>
+                    <th className="p-3.5 whitespace-nowrap">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {invoices.map((inv) => (
+                    <tr key={inv.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="p-3.5 font-bold text-slate-900 whitespace-nowrap">{inv.invoiceNo}</td>
+                      <td className="p-3.5 font-semibold text-slate-800 whitespace-nowrap">{inv.patientName}</td>
+                      <td className="p-3.5 whitespace-nowrap">{inv.items.map(i => i.description).join(', ')}</td>
+                      <td className="p-3.5 font-bold text-slate-900 whitespace-nowrap">৳{inv.totalAmount}</td>
+                      <td className="p-3.5 whitespace-nowrap">
+                        <span className="font-semibold bg-slate-100 px-2 py-0.5 rounded text-[11px]">
+                          {inv.paymentMethod}
+                        </span>
+                      </td>
+                      <td className="p-3.5 whitespace-nowrap">
+                        <span className="text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full">
+                          {inv.paymentStatus}
                         </span>
                       </td>
                     </tr>
@@ -193,71 +416,18 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* TAB 2: DOCTOR MANAGEMENT */}
-      {activeTab === 'doctors' && (
-        <div className="space-y-6 animate-fadeIn">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-extrabold text-slate-900 text-lg">Hospital Doctor Registry</h3>
-              <p className="text-xs text-slate-500">Manage consultant list, credentials & consultation fees</p>
-            </div>
-
-            <button
-              onClick={() => setIsAddDoctorModalOpen(true)}
-              className="flex items-center gap-1.5 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 px-4 py-2 rounded-xl shadow-sm"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add Specialist Doctor</span>
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {doctors.map((doc) => (
-              <div key={doc.id} className="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-4">
-                <div className="flex items-center gap-4">
-                  <img src={doc.photo} alt="" className="w-14 h-14 rounded-full object-cover border-2 border-teal-500/20" />
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-sm">{doc.name}</h4>
-                    <p className="text-xs text-teal-700 font-medium">{doc.designation}</p>
-                    <p className="text-[10px] text-slate-400">BMDC: {doc.bmdcRegNo}</p>
-                  </div>
-                </div>
-
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <span className="text-slate-500 font-medium">{doc.departmentName}</span>
-                  <span className="font-extrabold text-teal-700">Fee: ৳{doc.consultationFee}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* TAB 3: DEPARTMENTS */}
-      {activeTab === 'departments' && (
-        <div className="space-y-6 animate-fadeIn">
-          <h3 className="font-extrabold text-slate-900 text-lg">Clinical Departments</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {departments.map((dept) => (
-              <div key={dept.id} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
-                <h4 className="font-bold text-slate-900 text-base">{dept.name}</h4>
-                <p className="text-xs text-slate-600 leading-relaxed">{dept.description}</p>
-                <div className="pt-3 border-t text-xs font-bold text-teal-600">
-                  {dept.doctorCount} Active Doctors Assigned
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Add Doctor Modal */}
+      {/* Add Doctor Modal - Responsive */}
       {isAddDoctorModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-3xl p-6 max-w-md w-full space-y-5 shadow-2xl border border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 max-w-md w-full max-h-[90vh] overflow-y-auto space-y-4 sm:space-y-5 shadow-2xl border border-slate-100">
             <div className="flex items-center justify-between border-b pb-3">
               <h3 className="font-extrabold text-slate-900 text-base">Add New Doctor to Panel</h3>
-              <button onClick={() => setIsAddDoctorModalOpen(false)} className="text-slate-400 hover:text-slate-700">✕</button>
+              <button
+                onClick={() => setIsAddDoctorModalOpen(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
             <form onSubmit={handleAddDoctor} className="space-y-4">
@@ -290,7 +460,7 @@ export default function AdminDashboardPage() {
                 <select
                   value={newDocDeptId}
                   onChange={(e) => setNewDocDeptId(e.target.value)}
-                  className="w-full p-2.5 border border-slate-200 rounded-xl text-xs font-semibold outline-none"
+                  className="w-full p-2.5 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500"
                 >
                   {departments.map((d) => (
                     <option key={d.id} value={d.id}>{d.name}</option>
@@ -313,13 +483,13 @@ export default function AdminDashboardPage() {
                 <button
                   type="button"
                   onClick={() => setIsAddDoctorModalOpen(false)}
-                  className="text-xs font-semibold text-slate-600 hover:text-slate-900"
+                  className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-4 py-2"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 px-5 py-2.5 rounded-xl shadow-md"
+                  className="text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 px-5 py-2.5 rounded-xl shadow-md transition-all"
                 >
                   Add Doctor
                 </button>

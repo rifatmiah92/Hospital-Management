@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { INITIAL_DOCTORS, INITIAL_DEPARTMENTS } from '@/lib/mock-data';
-import { Search, Star, Calendar, ArrowRight, Stethoscope } from 'lucide-react';
+import { Search, Star, Calendar } from 'lucide-react';
 import BookingModal from '@/components/booking/BookingModal';
 
 export default function DoctorsPage() {
@@ -22,19 +21,19 @@ export default function DoctorsPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="bg-slate-900 rounded-3xl p-8 sm:p-10 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl border border-slate-800">
+      <div className="bg-slate-900 rounded-2xl sm:rounded-3xl p-6 sm:p-10 text-white flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6 shadow-xl border border-slate-800">
         <div className="space-y-2">
           <span className="text-xs font-bold uppercase tracking-wider text-teal-400">Specialist Registry</span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold">Find Your Specialist Doctor</h1>
+          <h1 className="text-2xl sm:text-4xl font-extrabold">Find Your Specialist Doctor</h1>
           <p className="text-xs sm:text-sm text-slate-300 max-w-xl">
             Book appointments with BMDC registered senior consultants, professors, and surgeons across 15+ specialties.
           </p>
         </div>
 
         {/* Filter Controls */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
           <div className="relative w-full sm:w-60">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
             <input
@@ -60,18 +59,18 @@ export default function DoctorsPage() {
       </div>
 
       {/* Doctor Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
         {filteredDoctors.map((doc) => (
           <div
             key={doc.id}
-            className="bg-white rounded-3xl border border-slate-200 p-5 hover:border-teal-400 shadow-sm hover:shadow-xl transition-all duration-300 hover-lift flex flex-col justify-between group"
+            className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-4 sm:p-5 hover:border-teal-400 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
           >
             <div>
-              <div className="relative mb-4">
+              <div className="relative mb-3 sm:mb-4">
                 <img
                   src={doc.photo}
                   alt={doc.name}
-                  className="w-full h-56 object-cover rounded-2xl border border-slate-100"
+                  className="w-full h-48 sm:h-56 object-cover rounded-xl sm:rounded-2xl border border-slate-100"
                 />
                 <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 text-[11px] font-bold text-amber-500">
                   <Star className="w-3 h-3 fill-amber-400" />
@@ -87,7 +86,7 @@ export default function DoctorsPage() {
               <p className="text-[11px] text-slate-400 mt-2 line-clamp-2">{doc.qualifications}</p>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between">
               <div>
                 <div className="text-[10px] text-slate-400 font-medium uppercase">Consultation Fee</div>
                 <div className="text-base font-extrabold text-teal-700">৳{doc.consultationFee}</div>

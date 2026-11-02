@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { CarePlusStore } from '@/lib/store';
 import { UserRole } from '@/lib/types';
-import { HeartPulse, Stethoscope, Microchip, Shield, User as UserIcon, ArrowRight, Lock, Mail } from 'lucide-react';
+import { HeartPulse, Stethoscope, Microchip, Shield, User as UserIcon, Lock, Mail } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,21 +19,16 @@ export default function LoginPage() {
     router.push(`/dashboard/${user.role}`);
   };
 
-  const handleQuickDemoLogin = (role: UserRole) => {
-    const user = CarePlusStore.switchRole(role);
-    router.push(`/dashboard/${user.role}`);
-  };
-
   return (
-    <div className="min-h-[85vh] flex items-center justify-center p-4 py-12">
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full overflow-hidden">
+    <div className="min-h-[80vh] flex items-center justify-center p-3 sm:p-4 py-8 sm:py-12">
+      <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full overflow-hidden">
         
         {/* Banner */}
-        <div className="bg-slate-900 p-8 text-white text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-teal-500 to-sky-500 flex items-center justify-center mx-auto text-white shadow-lg">
+        <div className="bg-slate-900 p-6 sm:p-8 text-white text-center space-y-2">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-teal-500 to-sky-500 flex items-center justify-center mx-auto text-white shadow-lg">
             <HeartPulse className="w-6 h-6 animate-pulse" />
           </div>
-          <h2 className="text-xl font-extrabold tracking-tight">CarePlus Portal Login</h2>
+          <h2 className="text-lg sm:text-xl font-extrabold tracking-tight">CarePlus Portal Login</h2>
           <p className="text-xs text-slate-400">Access your hospital records, schedule & management panel</p>
         </div>
 
@@ -54,20 +49,20 @@ export default function LoginPage() {
                 else if (role === 'lab') setEmail('biolab@careplus.com');
                 else if (role === 'admin') setEmail('admin@careplus.com');
               }}
-              className={`py-2.5 flex flex-col items-center gap-1 rounded-xl transition-all ${
+              className={`py-2 sm:py-2.5 flex flex-col items-center gap-1 rounded-xl transition-all ${
                 activeRoleTab === role
                   ? 'bg-white text-teal-700 shadow-sm font-extrabold'
-                  : 'hover:text-slate-900'
+                  : 'hover:text-slate-900 text-slate-500'
               }`}
             >
               {icon}
-              <span>{label}</span>
+              <span className="text-[10px] sm:text-xs">{label}</span>
             </button>
           ))}
         </div>
 
         {/* Form Body */}
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-5 sm:space-y-6">
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">Email / User ID</label>
@@ -99,44 +94,14 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 py-3 rounded-xl shadow-md transition-all uppercase tracking-wider"
+              className="w-full text-xs font-bold text-white bg-slate-900 hover:bg-teal-600 py-3 rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
             >
-              <span>Login as {activeRoleTab}</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Login as {activeRoleTab.toUpperCase()}</span>
             </button>
           </form>
 
-          {/* Quick Demo Instant Buttons */}
-          <div className="pt-4 border-t border-slate-100">
-            <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider text-center mb-2">
-              ⚡ Instant 1-Click Demo Login
-            </span>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => handleQuickDemoLogin('patient')}
-                className="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-xl border border-emerald-200 text-left"
-              >
-                👤 Patient Login
-              </button>
-              <button
-                onClick={() => handleQuickDemoLogin('doctor')}
-                className="p-2 bg-sky-50 hover:bg-sky-100 text-sky-800 text-[11px] font-bold rounded-xl border border-sky-200 text-left"
-              >
-                🩺 Doctor Login
-              </button>
-              <button
-                onClick={() => handleQuickDemoLogin('lab')}
-                className="p-2 bg-purple-50 hover:bg-purple-100 text-purple-800 text-[11px] font-bold rounded-xl border border-purple-200 text-left"
-              >
-                🔬 Lab Tech Login
-              </button>
-              <button
-                onClick={() => handleQuickDemoLogin('admin')}
-                className="p-2 bg-amber-50 hover:bg-amber-100 text-amber-800 text-[11px] font-bold rounded-xl border border-amber-200 text-left"
-              >
-                🛡️ Admin Login
-              </button>
-            </div>
+          <div className="text-center pt-2 border-t border-slate-100 text-xs text-slate-500">
+            <span>Demo credentials automatically prefilled for testing.</span>
           </div>
         </div>
 

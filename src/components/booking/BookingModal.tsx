@@ -121,7 +121,7 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
         confetti({
           particleCount: 80,
           spread: 70,
-          origin: { y: 0.6 }
+          origin: { y: 0.6 },
         });
       } catch (err) {
         console.log('Confetti effect triggered');
@@ -130,30 +130,30 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0D0F14]/80 backdrop-blur-md animate-fadeIn">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden border border-[#E7E4D9] flex flex-col max-h-[92vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-[#0D0F14]/80 backdrop-blur-md animate-fadeIn">
+      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden border border-[#E7E4D9] flex flex-col max-h-[94vh] sm:max-h-[90vh]">
         
         {/* Header */}
-        <div className="bg-[#12151C] p-5 text-white flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#F2CB05]/20 text-[#F2CB05] flex items-center justify-center font-bold">
-              <Calendar className="w-5 h-5" />
+        <div className="bg-[#12151C] p-3.5 sm:p-5 text-white flex items-center justify-between">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#F2CB05]/20 text-[#F2CB05] flex items-center justify-center font-bold shrink-0">
+              <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-base font-['Outfit']">Book Doctor Appointment</h3>
-              <p className="text-xs text-slate-400">CarePlus OPD Consultation Ticket System</p>
+              <h3 className="font-extrabold text-sm sm:text-base font-['Outfit']">Book Doctor Appointment</h3>
+              <p className="text-[11px] sm:text-xs text-slate-400">CarePlus OPD Consultation Ticket System</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors shrink-0"
           >
             <X className="w-4 h-4 text-slate-400" />
           </button>
         </div>
 
         {/* Step Indicator */}
-        <div className="bg-[#F2F0E8] px-6 py-3 border-b border-[#E7E4D9] flex items-center justify-between text-xs font-semibold">
+        <div className="bg-[#F2F0E8] px-3 sm:px-6 py-2.5 sm:py-3 border-b border-[#E7E4D9] flex items-center justify-between text-xs font-semibold">
           {[
             { s: 1, label: 'Doctor' },
             { s: 2, label: 'Slot' },
@@ -161,9 +161,9 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
             { s: 4, label: 'Payment' },
             { s: 5, label: 'Ticket' },
           ].map(({ s, label }) => (
-            <div key={s} className="flex items-center gap-1.5">
+            <div key={s} className="flex items-center gap-1 sm:gap-1.5">
               <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold ${
+                className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[10px] sm:text-[11px] font-extrabold ${
                   step === s
                     ? 'bg-[#F2CB05] text-[#0D0F14] shadow-sm'
                     : step > s
@@ -181,10 +181,10 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
         </div>
 
         {/* Body Content */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-6">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-4 sm:space-y-6">
           {/* STEP 1: Department & Doctor */}
           {step === 1 && (
-            <div className="space-y-5">
+            <div className="space-y-4 sm:space-y-5">
               <div>
                 <label className="block text-xs font-bold text-[#12151C] uppercase tracking-wider mb-2 font-['Outfit']">
                   1. Select Department
@@ -195,13 +195,13 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
                       key={dept.id}
                       type="button"
                       onClick={() => handleDeptChange(dept.id)}
-                      className={`p-3 rounded-2xl border text-left text-xs font-semibold transition-all ${
+                      className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border text-left text-xs font-semibold transition-all ${
                         selectedDeptId === dept.id
                           ? 'border-[#F2CB05] bg-[#F2CB05]/20 text-[#12151C] shadow-sm font-bold ring-1 ring-[#F2CB05]'
                           : 'border-[#E7E4D9] hover:border-slate-300 text-[#12151C] bg-white'
                       }`}
                     >
-                      <div className="font-bold font-['Outfit']">{dept.name}</div>
+                      <div className="font-bold font-['Outfit'] truncate">{dept.name}</div>
                       <div className="text-[10px] text-[#5B5F66]">{dept.doctorCount} Doctors</div>
                     </button>
                   ))}
@@ -222,27 +222,27 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
                       <div
                         key={doc.id}
                         onClick={() => setSelectedDoctorId(doc.id)}
-                        className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between gap-3 ${
+                        className={`p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border cursor-pointer transition-all flex items-center justify-between gap-3 ${
                           selectedDoctorId === doc.id
                             ? 'border-[#F2CB05] bg-[#F2CB05]/20 shadow-sm ring-1 ring-[#F2CB05]'
                             : 'border-[#E7E4D9] hover:border-slate-300 bg-white'
                         }`}
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
                           <img
                             src={doc.photo}
                             alt={doc.name}
-                            className="w-11 h-11 rounded-full object-cover border border-[#E7E4D9]"
+                            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border border-[#E7E4D9] shrink-0"
                           />
-                          <div>
-                            <div className="font-bold text-[#12151C] text-xs font-['Outfit']">{doc.name}</div>
-                            <div className="text-[11px] text-[#C9A400] font-semibold">{doc.designation}</div>
-                            <div className="text-[10px] text-[#5B5F66]">{doc.qualifications}</div>
+                          <div className="min-w-0">
+                            <div className="font-bold text-[#12151C] text-xs font-['Outfit'] truncate">{doc.name}</div>
+                            <div className="text-[11px] text-[#C9A400] font-semibold truncate">{doc.designation}</div>
+                            <div className="text-[10px] text-[#5B5F66] truncate">{doc.qualifications}</div>
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <div className="font-extrabold text-[#12151C] text-sm">৳{doc.consultationFee}</div>
-                          <div className="text-[10px] text-[#5B5F66]">⭐ {doc.rating} ({doc.reviewCount})</div>
+                          <div className="font-extrabold text-[#12151C] text-xs sm:text-sm">৳{doc.consultationFee}</div>
+                          <div className="text-[10px] text-[#5B5F66]">⭐ {doc.rating}</div>
                         </div>
                       </div>
                     ))}
@@ -254,11 +254,11 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
 
           {/* STEP 2: Date & Slots */}
           {step === 2 && selectedDoctor && (
-            <div className="space-y-6">
-              <div className="p-4 bg-[#F2F0E8] rounded-2xl border border-[#E7E4D9] flex items-center gap-3">
-                <img src={selectedDoctor.photo} alt="" className="w-12 h-12 rounded-full object-cover" />
-                <div>
-                  <h4 className="font-bold text-[#12151C] text-sm font-['Outfit']">{selectedDoctor.name}</h4>
+            <div className="space-y-4 sm:space-y-6">
+              <div className="p-3.5 sm:p-4 bg-[#F2F0E8] rounded-2xl border border-[#E7E4D9] flex items-center gap-3">
+                <img src={selectedDoctor.photo} alt="" className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover shrink-0" />
+                <div className="min-w-0">
+                  <h4 className="font-bold text-[#12151C] text-sm font-['Outfit'] truncate">{selectedDoctor.name}</h4>
                   <p className="text-xs text-[#C9A400] font-semibold">{selectedDoctor.departmentName}</p>
                   <p className="text-[11px] text-[#5B5F66]">Consultation Fee: ৳{selectedDoctor.consultationFee}</p>
                 </div>
@@ -273,7 +273,7 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
                   value={bookingDate}
                   min="2026-07-25"
                   onChange={(e) => setBookingDate(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-[#E7E4D9] bg-[#F2F0E8] text-xs font-semibold focus:outline-none focus:border-[#C9A400]"
+                  className="w-full p-2.5 sm:p-3 rounded-xl border border-[#E7E4D9] bg-[#F2F0E8] text-xs font-semibold focus:outline-none focus:border-[#C9A400]"
                 />
               </div>
 
@@ -287,7 +287,7 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
                       key={slot}
                       type="button"
                       onClick={() => setSelectedTimeSlot(slot)}
-                      className={`p-2.5 rounded-xl border text-center text-xs font-bold transition-all ${
+                      className={`p-2 sm:p-2.5 rounded-xl border text-center text-xs font-bold transition-all ${
                         selectedTimeSlot === slot
                           ? 'border-[#F2CB05] bg-[#F2CB05] text-[#0D0F14] shadow-sm'
                           : 'border-[#E7E4D9] bg-white text-[#12151C] hover:border-[#F2CB05]'
@@ -340,8 +340,8 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
 
           {/* STEP 4: Payment Simulation */}
           {step === 4 && selectedDoctor && (
-            <div className="space-y-5">
-              <div className="p-4 bg-[#F2F0E8] rounded-2xl border border-[#E7E4D9] text-xs space-y-1.5">
+            <div className="space-y-4 sm:space-y-5">
+              <div className="p-3.5 sm:p-4 bg-[#F2F0E8] rounded-2xl border border-[#E7E4D9] text-xs space-y-1.5">
                 <div className="flex justify-between text-[#5B5F66]">
                   <span>Doctor Consultation Fee:</span>
                   <span className="font-bold text-[#12151C]">৳{selectedDoctor.consultationFee}</span>
@@ -360,19 +360,19 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
                 <label className="block text-xs font-bold text-[#12151C] uppercase tracking-wider mb-2 font-['Outfit']">
                   Select Payment Method
                 </label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
                   {(['bKash', 'Nagad', 'Card'] as PaymentMethod[]).map((method) => (
                     <button
                       key={method}
                       type="button"
                       onClick={() => setPaymentMethod(method)}
-                      className={`p-3 rounded-2xl border font-bold text-xs flex flex-col items-center gap-1 transition-all ${
+                      className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border font-bold text-xs flex flex-col items-center gap-1 transition-all ${
                         paymentMethod === method
                           ? 'border-[#F2CB05] bg-[#F2CB05]/20 text-[#12151C] shadow-sm ring-1 ring-[#F2CB05]'
                           : 'border-[#E7E4D9] bg-white text-[#12151C] hover:border-slate-300'
                       }`}
                     >
-                      <CreditCard className="w-5 h-5 text-[#C9A400]" />
+                      <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-[#C9A400]" />
                       <span>{method}</span>
                     </button>
                   ))}
@@ -396,18 +396,18 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
 
           {/* STEP 5: Success Ticket */}
           {step === 5 && createdAppointment && (
-            <div className="text-center py-6 space-y-5 animate-fadeIn">
-              <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
-                <CheckCircle className="w-10 h-10" />
+            <div className="text-center py-4 sm:py-6 space-y-4 sm:space-y-5 animate-fadeIn">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10" />
               </div>
               <div>
-                <h3 className="text-xl font-extrabold text-[#12151C] font-['Outfit']">Appointment Confirmed!</h3>
+                <h3 className="text-lg sm:text-xl font-extrabold text-[#12151C] font-['Outfit']">Appointment Confirmed!</h3>
                 <p className="text-xs text-[#5B5F66] mt-1">
                   Ticket No: <strong className="text-[#C9A400]">{createdAppointment.appointmentNo}</strong>
                 </p>
               </div>
 
-              <div className="p-4 bg-[#F2F0E8] rounded-2xl border border-[#E7E4D9] text-left text-xs space-y-2 max-w-md mx-auto">
+              <div className="p-3.5 sm:p-4 bg-[#F2F0E8] rounded-2xl border border-[#E7E4D9] text-left text-xs space-y-2 max-w-md mx-auto">
                 <div className="flex justify-between">
                   <span className="text-[#5B5F66]">Doctor:</span>
                   <span className="font-bold text-[#12151C]">{createdAppointment.doctorName}</span>
@@ -422,19 +422,19 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3 pt-2">
                 <button
                   onClick={() => downloadAppointmentTicketPDF(createdAppointment)}
                   className="btn-gold w-full sm:w-auto flex items-center justify-center gap-2 text-xs font-bold px-5 py-3 rounded-xl shadow-md"
                 >
                   <Download className="w-4 h-4 text-[#0D0F14]" />
-                  <span>Download Appointment Ticket PDF</span>
+                  <span>Download Ticket PDF</span>
                 </button>
                 <button
                   onClick={onClose}
                   className="w-full sm:w-auto text-xs font-bold text-[#12151C] bg-[#E7E4D9] hover:bg-[#F2F0E8] px-5 py-3 rounded-xl transition-all"
                 >
-                  Go to Dashboard
+                  Close & View Dashboard
                 </button>
               </div>
             </div>
@@ -443,12 +443,12 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
 
         {/* Footer Navigation */}
         {step < 5 && (
-          <div className="p-4 bg-[#F2F0E8] border-t border-[#E7E4D9] flex items-center justify-between">
+          <div className="p-3.5 sm:p-4 bg-[#F2F0E8] border-t border-[#E7E4D9] flex items-center justify-between">
             {step > 1 ? (
               <button
                 type="button"
                 onClick={() => setStep((step - 1) as any)}
-                className="text-xs font-bold text-[#5B5F66] hover:text-[#12151C]"
+                className="text-xs font-bold text-[#5B5F66] hover:text-[#12151C] px-2 py-1"
               >
                 Back
               </button>
@@ -456,7 +456,7 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
               <button
                 type="button"
                 onClick={onClose}
-                className="text-xs font-semibold text-[#5B5F66] hover:text-[#12151C]"
+                className="text-xs font-semibold text-[#5B5F66] hover:text-[#12151C] px-2 py-1"
               >
                 Cancel
               </button>
@@ -471,7 +471,7 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
                   (step === 3 && (!patientName || !patientPhone))
                 }
                 onClick={() => setStep((step + 1) as any)}
-                className="btn-gold flex items-center gap-2 text-xs font-bold px-5 py-2.5 rounded-xl shadow-sm"
+                className="btn-gold flex items-center gap-2 text-xs font-bold px-4 sm:px-5 py-2.5 rounded-xl shadow-sm disabled:opacity-50"
               >
                 <span>Continue</span>
                 <ArrowRight className="w-4 h-4" />
@@ -481,9 +481,9 @@ export default function BookingModal({ onClose, preselectedDoctorId, preselected
                 type="button"
                 disabled={isProcessing}
                 onClick={handleCompleteBooking}
-                className="btn-gold flex items-center gap-2 text-xs font-bold px-6 py-2.5 rounded-xl shadow-md"
+                className="btn-gold flex items-center gap-2 text-xs font-bold px-4 sm:px-6 py-2.5 rounded-xl shadow-md"
               >
-                {isProcessing ? 'Processing Payment...' : `Pay ৳${selectedDoctor?.consultationFee} & Confirm`}
+                {isProcessing ? 'Processing...' : `Pay ৳${selectedDoctor?.consultationFee} & Confirm`}
               </button>
             )}
           </div>
